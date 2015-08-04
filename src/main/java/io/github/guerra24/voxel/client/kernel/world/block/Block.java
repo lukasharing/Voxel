@@ -24,6 +24,8 @@
 
 package io.github.guerra24.voxel.client.kernel.world.block;
 
+import java.util.HashMap;
+
 import io.github.guerra24.voxel.client.kernel.resources.models.WaterTile;
 import io.github.guerra24.voxel.client.kernel.world.block.types.BlockAir;
 import io.github.guerra24.voxel.client.kernel.world.block.types.BlockDimOre;
@@ -42,6 +44,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public abstract class Block {
 
+	public static HashMap<Byte, Block> tileMap = new HashMap<Byte, Block>();
+
 	public static Block Grass = new BlockGrass();
 	public static Block Stone = new BlockStone();
 	public static Block NULL = new BlockNull();
@@ -57,38 +61,38 @@ public abstract class Block {
 	public abstract byte getId();
 
 	public abstract Entity getFaceUp(Vector3f pos);
+
 	public abstract Entity getFaceDown(Vector3f pos);
+
 	public abstract Entity getFaceEast(Vector3f pos);
+
 	public abstract Entity getFaceWest(Vector3f pos);
+
 	public abstract Entity getFaceNorth(Vector3f pos);
+
 	public abstract Entity getFaceSouth(Vector3f pos);
 
 	public abstract WaterTile getWaterTitle(Vector3f pos);
 
+	public static void initBasicBlocks() {
+		registerBlock((byte) -1, Indes);
+		registerBlock((byte) 0, Air);
+		registerBlock((byte) 1, Stone);
+		registerBlock((byte) 2, Grass);
+		registerBlock((byte) 3, Sand);
+		registerBlock((byte) 4, Dirt);
+		registerBlock((byte) 5, DiamondOre);
+		registerBlock((byte) 6, GoldOre);
+		registerBlock((byte) 7, Water);
+		registerBlock((byte) 8, Glass);
+	}
+
+	public static void registerBlock(byte id, Block block) {
+		tileMap.put(id, block);
+	}
+
 	public static Block getBlock(byte id) {
-		switch (id) {
-		case -1:
-			return Block.Indes;
-		case 0:
-			return Block.Air;
-		case 1:
-			return Block.Stone;
-		case 2:
-			return Block.Grass;
-		case 3:
-			return Block.Sand;
-		case 4:
-			return Block.Dirt;
-		case 5:
-			return Block.DiamondOre;
-		case 6:
-			return Block.GoldOre;
-		case 7:
-			return Block.Water;
-		case 8:
-			return Block.Glass;
-		}
-		return Block.NULL;
+		return tileMap.get(id);
 	}
 
 }

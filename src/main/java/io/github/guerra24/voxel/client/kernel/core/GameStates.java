@@ -24,6 +24,8 @@
 
 package io.github.guerra24.voxel.client.kernel.core;
 
+import java.util.Random;
+
 import io.github.guerra24.voxel.client.kernel.menu.Button;
 
 import org.lwjgl.input.Keyboard;
@@ -42,14 +44,22 @@ public class GameStates {
 	}
 
 	public enum State {
-		GAME, MAINMENU, IN_PAUSE;
+		GAME, MAINMENU, IN_PAUSE, LOADING_WORLD;
 	}
 
 	public void switchStates() {
 		if (state == State.MAINMENU && Button.isInButtonPlay()) {
 			// Kernel.gameResources.SoundSystem.pause("MainMenuMusic");
+			state = State.LOADING_WORLD;
 			isPlaying = true;
-			Kernel.world.startWorld();
+			Random seed;
+			if (KernelConstants.isCustomSeed) {
+				seed = new Random(KernelConstants.seed.hashCode());
+			} else {
+				seed = new Random();
+			}
+			Kernel.world.startWorld("Mundo-1", Kernel.gameResources.camera,
+					seed, 0);
 			Kernel.gameResources.camera.setMouse();
 			state = State.GAME;
 		}
@@ -64,16 +74,9 @@ public class GameStates {
 			Kernel.gameResources.waters.clear();
 			Kernel.gameResources.cubes.clear();
 
-			for (int x = 0; x < Kernel.world.chunks.length; x++) {
-				for (int z = 0; z < Kernel.world.chunks.length; z++) {
-					if (Kernel.world.chunks[x][z] != null) {
-						Kernel.world.chunks[x][z].dispose();
-						Kernel.world.chunks[x][z] = null;
-					}
-				}
-				Kernel.gameResources.camera.setPosition(new Vector3f(0, 80, 0));
-				state = State.MAINMENU;
-			}
+			Kernel.world.removeAll();
+			Kernel.gameResources.camera.setPosition(new Vector3f(0, 80, 0));
+			state = State.MAINMENU;
 		}
 
 		if (state == State.GAME && !Display.isActive()

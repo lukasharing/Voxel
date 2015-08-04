@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Guerra24 / ThinMatrix
+ * Copyright (c) 2015 Guerra24
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import io.github.guerra24.voxel.client.kernel.core.KernelConstants;
-import io.github.guerra24.voxel.client.kernel.graphics.opengl.GL3Context;
+import io.github.guerra24.voxel.client.kernel.graphics.opengl.VoxelGL33;
 import io.github.guerra24.voxel.client.kernel.graphics.shaders.EntityShader;
 import io.github.guerra24.voxel.client.kernel.resources.Loader;
 import io.github.guerra24.voxel.client.kernel.resources.models.TexturedModel;
@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
@@ -65,18 +66,18 @@ public class MasterRenderer {
 	}
 
 	public void initGL() {
-		GL3Context.glEnable(GL_DEPTH_TEST);
-		GL3Context.glEnable(GL_CULL_FACE);
-		GL3Context.glCullFace(GL_BACK);
+		VoxelGL33.glEnable(GL_DEPTH_TEST);
+		VoxelGL33.glEnable(GL_CULL_FACE);
+		VoxelGL33.glCullFace(GL_BACK);
 	}
 
 	public Matrix4f getProjectionMatrix() {
 		return projectionMatrix;
 	}
 
-	public void renderWorld(List<Entity> entities, List<Light> lights,
+	public void renderWorld(Queue<Entity> cubes, List<Light> lights,
 			Camera camera) {
-		for (Entity entity : entities) {
+		for (Entity entity : cubes) {
 			if (Frustum.getFrustum().pointInFrustum(entity.getPosition().x,
 					entity.getPosition().y, entity.getPosition().z))
 				processEntity(entity);
@@ -139,8 +140,8 @@ public class MasterRenderer {
 	}
 
 	public void prepare() {
-		GL3Context.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GL3Context.glClearColor(KernelConstants.RED, KernelConstants.GREEN,
+		VoxelGL33.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		VoxelGL33.glClearColor(KernelConstants.RED, KernelConstants.GREEN,
 				KernelConstants.BLUE, 1);
 	}
 
